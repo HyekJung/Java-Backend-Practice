@@ -1,10 +1,12 @@
 spring:
   jpa:
-    # 전송 쿼리 확인
-    show-sql: true # 데이터베이스에 쿼리할 일이 있으면 모두 보여주는 옵션
+    show-sql: true
     properties:
       hibernate:
-        format_sql: true # 데이터베이스에 쿼리할 일이 있으면 모두 보여주는 옵션
-
-        # 테이블 생성 후에 data.sql 실행
-    defer-datasource-initialization: true # 애플리케이션을 실행할 때 테이블 생성, sql 파일에 있는 쿼리를 실행하도록 하는 옵션
+        format_sql: true
+    defer-datasource-initialization: true
+  datasource:
+    url: jdbc:h2:mem:testdb
+  h2:
+    console:
+      enabled: true
