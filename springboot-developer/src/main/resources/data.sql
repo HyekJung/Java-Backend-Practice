@@ -1,3 +1,8 @@
-INSERT INTO article (title, content) VALUES ('제목1', '내용1')
-INSERT INTO article (title, content) VALUES ('제목2', '내용2')
-INSERT INTO article (title, content) VALUES ('제목3', '내용3')
+INSERT INTO article (title, content, email, phone_number, user_name, password, created_at, updated_at)
+VALUES ('제목1', '내용1', 'email1@naver.com', '010-0000-0000', '사용자1', 'pW11111!@', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('제목2', '내용2', 'email2@naver.com', '010-1111-1111', '사용자2', 'pW22222!@', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP),
+       ('제목3', '내용3', 'email3@naver.com', '010-2222-2222', '사용자3', 'pW33333!@', CURRENT_TIMESTAMP, CURRENT_TIMESTAMP);
+
+--INSERT INTO article (title, content) VALUES ('제목1', '내용1')
+--INSERT INTO article (title, content) VALUES ('제목2', '내용2')
+--INSERT INTO article (title, content) VALUES ('제목3', '내용3')
