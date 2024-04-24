@@ -25,12 +25,12 @@ public class UpdateArticleRequest extends BaseEntity{
     //@Pattern(regexp = "", message = "비밀번호는 대소문자 조합, 5개 이상의 숫자, 그리고 특수문자(*!@#$%) 2개 이상을 포함해야 합니다.")
     private String password;
 
-    public UpdateArticleRequest(String title, String content, String email, String phoneNumber, String user, String password){
+    public UpdateArticleRequest(String title, String content, String email, String phoneNumber, String userName, String password){
         this.title = title;
         this.content = content;
         this.email = email;
         this.phoneNumber = phoneNumber;
-        this.user = user;
+        this.user = userName;
         this.password = password;
     }
 }

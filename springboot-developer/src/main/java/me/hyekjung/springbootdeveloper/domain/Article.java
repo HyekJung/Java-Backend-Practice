@@ -37,12 +37,6 @@ public class Article extends BaseEntity {
     @Column(name = "password", nullable = false)
     private String password;
 
-//    @Column(name = "createdAt", nullable = false)
-//    private LocalDateTime createdAt;
-//
-//    @Column(name = "updatedAt", nullable = false)
-//    private LocalDateTime updatedAt;
-
     @Builder // 빌더 패턴으로 객체 생성
     // 생성자 위에 입력하면 빌더 패턴 방식으로 객체를 생성할 수 있어 편리
     public Article(String title, String content, String email, String phoneNumber, String userName, String password) {
@@ -54,9 +48,11 @@ public class Article extends BaseEntity {
         this.password = password;
     }
 
-    public void update(String title, String content, String userName, String password){
+    public void update(String title, String content, String email, String phoneNumber, String userName, String password){
         this.title = title;
         this.content = content;
+        this.email = email;
+        this.phoneNumber = phoneNumber;
         this.userName = userName;
         this.password = password;
     }

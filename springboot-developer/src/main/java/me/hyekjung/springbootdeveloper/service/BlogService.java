@@ -37,12 +37,13 @@ public class BlogService {
     }
 
     //트랜잭션 메서드 - 매칭한 메서드를 하나의 트랜잭션으로 묶는 역할
-//    @Transactional
-//    public Article update(long id, UpdateArticleRequest request){
-//        Article article = blogRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("not found: "+ id));
-//
-//        article.update(request.getTitle(), request.getContent());
-//
-//        return article;
-//    }
+    @Transactional
+    public Article update(long id, UpdateArticleRequest request){
+        Article article = blogRepository.findById(id).orElseThrow(()-> new IllegalArgumentException("not found: "+ id));
+
+        article.update(request.getTitle(), request.getContent(), request.getEmail(), request.getPhoneNumber(),
+                request.getUser(), request.getPhoneNumber());
+
+        return article;
+    }
 }

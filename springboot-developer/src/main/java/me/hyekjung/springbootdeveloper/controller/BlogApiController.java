@@ -12,14 +12,34 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
 import org.springframework.web.bind.annotation.*;
 
+import java.time.LocalDateTime;
 import java.util.List;
+import java.util.Optional;
 
 @RequiredArgsConstructor
 @RestController // Http Response Body에 객체 데이터를 JSON 형식으로 반환하는 컨트롤러
 public class BlogApiController {
     private final BlogService blogService;
 
-    // Http 메서드가 POST일 때 전달받은 URL과 동일하면 메서드로 매핑
+    // 글 목록 조회
+    @GetMapping("/api/articles")
+    public ResponseEntity<List<ArticleResponse>> findAllArticles(){
+        List<ArticleResponse> articles = blogService.findAll().stream()
+                .map(ArticleResponse::new).toList();
+
+        return ResponseEntity.ok().body(articles);
+    }
+
+    // 글 조회
+    @GetMapping("/api/articles/{id}")
+    //URL 경로에서 값 추출
+    public ResponseEntity<ArticleResponse> findArticles(@PathVariable long id){
+        Article article = blogService.findById(id);
+
+        return ResponseEntity.ok().body(new ArticleResponse(article));
+    }
+
+    // 글 추가
     @PostMapping("/api/articles")
     // @RequestBody로 요청 본문 값 매핑
     public ResponseEntity<Article> addArticle(@Validated @RequestBody AddArticleRequest request){
@@ -29,36 +49,38 @@ public class BlogApiController {
         return ResponseEntity.status(HttpStatus.CREATED).body(savedArticle);
     }
 
-    @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticles(){
-        List<ArticleResponse> articles = blogService.findAll().stream()
-                .map(ArticleResponse::new).toList();
+    //글 수정
+    @PutMapping("/api/articles/{id}")
+    public ResponseEntity<?> updateArticle(@PathVariable long id,
+                                                 @RequestBody UpdateArticleRequest request) {
 
-        return ResponseEntity.ok().body(articles);
-    }
+        Article optionalArticle = blogService.findById(id); // 해당 id의 글
+        Article updatedArticle = blogService.update(id, request);
 
-    @GetMapping("/api/articles/{id}")
-    //URL 경로에서 값 추출
-    public ResponseEntity<ArticleResponse> findArticles(@PathVariable long id){
-        Article article = blogService.findById(id);
+        LocalDateTime createdAt = optionalArticle.getCreatedAt(); // 글 생성일
+        LocalDateTime future = createdAt.plusDays(10);
 
-        return ResponseEntity.ok().body(new ArticleResponse(article));
-    }
+        boolean isFuture = createdAt.isAfter(future);
+            if(isFuture){
+                return ResponseEntity.status(HttpStatus.FORBIDDEN)
+                        .body("글을 [등록, 수정]한 지 10일이 지나 더 이상 수정할 수 없습니다.");
+            }else{
+                return ResponseEntity.ok().body(updatedArticle);
+            }
+        }
 
-    @DeleteMapping("/api/articles/{id}")
-    public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
-        blogService.delete(id);
 
-        return ResponseEntity.ok()
-                .build();
-    }
-
-//    @PutMapping("/api/articles/{id}")
-//    public ResponseEntity<Article> updateArticle(@PathVariable long id,
-//                                                 @RequestBody UpdateArticleRequest request) {
-//        Article updatedArticle = blogService.update(id, request);
+//    // 글 삭제
+//    @DeleteMapping("/api/articles/{id}")
+//    public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
+//        blogService.delete(id);
 //
 //        return ResponseEntity.ok()
-//                .body(updatedArticle);
+//                .build();
 //    }
 }
+
+
+//class MessageDTO{ // 메세지로 따로 분리
+//    String message;
+//}
