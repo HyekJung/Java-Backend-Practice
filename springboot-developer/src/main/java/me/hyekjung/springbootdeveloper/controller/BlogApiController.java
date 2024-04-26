@@ -7,6 +7,9 @@ import me.hyekjung.springbootdeveloper.dto.ArticleResponse;
 import me.hyekjung.springbootdeveloper.dto.UpdateArticleRequest;
 import me.hyekjung.springbootdeveloper.service.BlogService;
 import org.hibernate.sql.Update;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Pageable;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -23,8 +26,13 @@ public class BlogApiController {
 
     // 글 목록 조회
     @GetMapping("/api/articles")
-    public ResponseEntity<List<ArticleResponse>> findAllArticles(){
-        List<ArticleResponse> articles = blogService.findAll().stream()
+    public ResponseEntity<List<ArticleResponse>> getAllArticles(
+            @RequestParam(defaultValue = "0") int page,
+            @RequestParam(defaultValue = "10") int size
+    ){
+        Pageable pageable = PageRequest.of(page, size);
+        Page<Article> articlePage = blogService.findAll(pageable);
+        List<ArticleResponse> articles = articlePage.getContent().stream()
                 .map(ArticleResponse::new).toList();
 
         return ResponseEntity.ok().body(articles);
@@ -33,7 +41,7 @@ public class BlogApiController {
     // 글 조회
     @GetMapping("/api/articles/{id}")
     //URL 경로에서 값 추출
-    public ResponseEntity<ArticleResponse> findArticles(@PathVariable long id){
+    public ResponseEntity<ArticleResponse> getArticles(@PathVariable long id){
         Article article = blogService.findById(id);
 
         return ResponseEntity.ok().body(new ArticleResponse(article));
@@ -51,24 +59,15 @@ public class BlogApiController {
 
     //글 수정
     @PutMapping("/api/articles/{id}")
-    public ResponseEntity<?> updateArticle(@PathVariable long id,
+    public ResponseEntity<?> updateArticle(@Validated @PathVariable long id,
                                                  @RequestBody UpdateArticleRequest request) {
-
-        Article optionalArticle = blogService.findById(id); // 해당 id의 글
-        Article updatedArticle = blogService.update(id, request);
-
-        LocalDateTime createdAt = optionalArticle.getCreatedAt(); // 글 생성일
-        LocalDateTime future = createdAt.plusDays(10);
-
-        boolean isFuture = createdAt.isAfter(future);
-            if(isFuture){
-                return ResponseEntity.status(HttpStatus.FORBIDDEN)
-                        .body("글을 [등록, 수정]한 지 10일이 지나 더 이상 수정할 수 없습니다.");
-            }else{
-                return ResponseEntity.ok().body(updatedArticle);
-            }
+        try {
+            blogService.update(id, request);
+            return ResponseEntity.ok().body(blogService);
+        } catch (IllegalArgumentException e) { //BlogService 예외 로직
+            return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
-
+    }
 
 //    // 글 삭제
 //    @DeleteMapping("/api/articles/{id}")

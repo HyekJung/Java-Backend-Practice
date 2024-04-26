@@ -25,17 +25,6 @@ public class AddArticleRequest{
     //@Pattern(regexp = "", message = "비밀번호는 대소문자 조합, 5개 이상의 숫자, 그리고 특수문자(*!@#$%) 2개 이상을 포함해야 합니다.")
     private String password;
 
-
-//    //createdAt을 위한 기본 생성자 명시적으로 추가
-//    public AddArticleRequest(String title, String content, String email, String phoneNumber, String userName, String password) {
-//        this.title = title;
-//        this.content = content;
-//        this.email = email;
-//        this.phoneNumber = phoneNumber;
-//        this.userName = userName;
-//        this.password = password;
-//    }
-
     //객체 생성을 위한 메서드
     public Article toEntity(){ // 생성자를 사용해 객체 생성
         return Article.builder()
