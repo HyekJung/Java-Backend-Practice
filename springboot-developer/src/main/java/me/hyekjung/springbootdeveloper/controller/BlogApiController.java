@@ -10,6 +10,7 @@ import org.hibernate.sql.Update;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Pageable;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.HttpStatus;
 import org.springframework.http.ResponseEntity;
 import org.springframework.validation.annotation.Validated;
@@ -28,9 +29,18 @@ public class BlogApiController {
     @GetMapping("/api/articles")
     public ResponseEntity<List<ArticleResponse>> getAllArticles(
             @RequestParam(defaultValue = "0") int page,
-            @RequestParam(defaultValue = "10") int size
+            @RequestParam(defaultValue = "10") int size,
+            @RequestParam(defaultValue = "ASC") String sortName
     ){
-        Pageable pageable = PageRequest.of(page, size);
+        Sort.Direction direction;
+        if(sortName.equalsIgnoreCase("ASC")){ //사용자 요청이 오름차순 정렬이면
+            direction = Sort.Direction.ASC;
+        }else{
+            direction = Sort.Direction.DESC;
+        }
+
+        Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
+
         Page<Article> articlePage = blogService.findAll(pageable);
         List<ArticleResponse> articles = articlePage.getContent().stream()
                 .map(ArticleResponse::new).toList();

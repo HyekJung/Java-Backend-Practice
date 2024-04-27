@@ -11,6 +11,7 @@ import org.junit.jupiter.api.Test;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.boot.test.autoconfigure.web.servlet.AutoConfigureMockMvc;
 import org.springframework.boot.test.context.SpringBootTest;
+import org.springframework.data.domain.Sort;
 import org.springframework.http.MediaType;
 import org.springframework.test.web.servlet.MockMvc;
 import org.springframework.test.web.servlet.ResultActions;
@@ -98,6 +99,7 @@ class BlogApiControllerTest {
         final String url = "/api/articles";
         final int page = 0;
         final int size = 10;
+        final String sortName = "DESC";
 
         final String title = "title";
         final String content = "content";
@@ -120,10 +122,13 @@ class BlogApiControllerTest {
                     .build());
         }
 
+        Sort.Direction direction;
+
         // when
         final ResultActions resultActions = mockMvc.perform(get(url)
                 .param("page", String.valueOf(page)) //페이지 번호, 크기 전달
                 .param("size", String.valueOf(size))
+                .param("sortName", sortName)
                 .accept(MediaType.APPLICATION_JSON));
 
         //System.out.println("url값을 찾아서: " + url);
@@ -131,7 +136,8 @@ class BlogApiControllerTest {
         // then
         resultActions
                 .andExpect(status().isOk());
- /*             .andExpect(jsonPath("$[.savedArticle").isArray()); // 목록(배열) 확인*/
+//                .andExpect(jsonPath("&[0].direction").value(sortName)); // 사용자 요청 방향 확인
+                //.andExpect(jsonPath("$.content").isArray()) // 목록(배열) 확인
 //                .andExpect(jsonPath("$.page").value(page)) // 페이지 번호
 //                .andExpect(jsonPath("$.size").value(size)); // 페이지 크기
     }
