@@ -4,13 +4,16 @@ import jakarta.validation.constraints.*;
 import lombok.AllArgsConstructor;
 import lombok.Getter;
 import lombok.NoArgsConstructor;
+import lombok.Setter;
+import org.springframework.beans.factory.annotation.Autowired;
 
 import java.time.LocalDateTime;
 
 @NoArgsConstructor
-//@AllArgsConstructor
+@AllArgsConstructor
 @Getter
-public class UpdateArticleRequest extends BaseEntity{
+@Setter
+public class UpdateArticleRequest{
     @Size(max = 200, message = "제목은 200자를 초과할 수 없습니다.")
     private String title;
     @Size(max = 1000, message = "내용은 1000자를 초과할 수 없습니다.")
@@ -25,12 +28,14 @@ public class UpdateArticleRequest extends BaseEntity{
     //@Pattern(regexp = "", message = "비밀번호는 대소문자 조합, 5개 이상의 숫자, 그리고 특수문자(*!@#$%) 2개 이상을 포함해야 합니다.")
     private String password;
 
-    public UpdateArticleRequest(String title, String content, String email, String phoneNumber, String userName, String password){
-        this.title = title;
-        this.content = content;
-        this.email = email;
-        this.phoneNumber = phoneNumber;
-        this.userName = userName;
-        this.password = password;
-    }
+    private String message;
+
+//    public UpdateArticleRequest(String title, String content, String email, String phoneNumber, String userName, String password){
+//        this.title = title;
+//        this.content = content;
+//        this.email = email;
+//        this.phoneNumber = phoneNumber;
+//        this.userName = userName;
+//        this.password = password;
+//    }
 }

@@ -17,6 +17,7 @@ public class ArticleResponse {
     private final String userName;
     private final String password;
     private final LocalDateTime createdAt;
+    private final LocalDateTime updatedAt;
 
     public ArticleResponse(Article article){
         this.title = article.getTitle();
@@ -26,5 +27,6 @@ public class ArticleResponse {
         this.userName = article.getUserName();
         this.password = article.getPassword();
         this.createdAt = article.getCreatedAt();
+        this.updatedAt = article.getUpdatedAt();
     }
 }

@@ -4,6 +4,7 @@ import lombok.RequiredArgsConstructor;
 import me.hyekjung.springbootdeveloper.domain.Article;
 import me.hyekjung.springbootdeveloper.dto.AddArticleRequest;
 import me.hyekjung.springbootdeveloper.dto.ArticleResponse;
+import me.hyekjung.springbootdeveloper.dto.DeleteArticleRequest;
 import me.hyekjung.springbootdeveloper.dto.UpdateArticleRequest;
 import me.hyekjung.springbootdeveloper.service.BlogService;
 import org.hibernate.sql.Update;
@@ -72,14 +73,24 @@ public class BlogApiController {
     public ResponseEntity<?> updateArticle(@Validated @PathVariable long id,
                                                  @RequestBody UpdateArticleRequest request) {
         try {
-            blogService.update(id, request);
-            return ResponseEntity.ok().body(blogService);
+            Article updatedArticle = blogService.update(id, request);
+            return ResponseEntity.ok().body(updatedArticle);
         } catch (IllegalArgumentException e) { //BlogService 예외 로직
             return ResponseEntity.status(HttpStatus.FORBIDDEN).body(e.getMessage());
         }
     }
 
-//    // 글 삭제
+//    // 글 삭제 - 삭제 처리
+//    @DeleteMapping("/api/articles")
+//    public ResponseEntity<Void> deleteChange(@PathVariable long id,
+//                                              @RequestBody DeleteArticleRequest request) {
+//        blogService.deleteChange(id, request);
+//
+//        return ResponseEntity.ok()
+//                .build();
+//    }
+//
+//    // 글 삭제 - DB 삭제
 //    @DeleteMapping("/api/articles/{id}")
 //    public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
 //        blogService.delete(id);

@@ -21,4 +21,6 @@ public abstract class BaseEntity {
     @LastModifiedDate //수정
     private LocalDateTime updatedAt;
 
+    //private boolean deletedAt; //삭제 여부
+
 }
