@@ -24,6 +24,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import static org.assertj.core.api.Assertions.assertThat;
+import static org.hamcrest.collection.IsCollectionWithSize.hasSize;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.post;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.delete;
@@ -96,10 +98,12 @@ class BlogApiControllerTest {
     @Test
     public void getPageAllArticles() throws Exception {
         // given
+//        final String url = "/api/articles?page=0&size=10&sortName=ASC";
         final String url = "/api/articles";
+
         final int page = 0;
         final int size = 10;
-        final String sortName = "DESC";
+        final String sortName = "ASC";
 
         final String title = "title";
         final String content = "content";
@@ -108,21 +112,19 @@ class BlogApiControllerTest {
         final String userName = "혜정";
         final String password = "pW12345!@";
 
-        List<Article> savedArticle = new ArrayList<>(); // 글 목록 저장
+        //List<Article> savedArticle = new ArrayList<>(); // 글 목록 저장
 
         // 글 목록 생성 - 페이징 확인용 20개
         for(int i = 0; i < size * 2; i++){
             blogRepository.save(Article.builder() //글 등록
-                    .title(title + i)
-                    .content(content + i)
+                    .title(title + String.valueOf(i))
+                    .content(content + String.valueOf(i))
                     .email(email)
-                    .phoneNumber(phoneNumber + i)
-                    .userName(userName + i)
+                    .phoneNumber(phoneNumber + String.valueOf(i))
+                    .userName(userName + String.valueOf(i))
                     .password(password)
                     .build());
         }
-
-        Sort.Direction direction;
 
         // when
         final ResultActions resultActions = mockMvc.perform(get(url)
@@ -136,10 +138,10 @@ class BlogApiControllerTest {
         // then
         resultActions
                 .andExpect(status().isOk());
-//                .andExpect(jsonPath("&[0].direction").value(sortName)); // 사용자 요청 방향 확인
-                //.andExpect(jsonPath("$.content").isArray()) // 목록(배열) 확인
-//                .andExpect(jsonPath("$.page").value(page)) // 페이지 번호
-//                .andExpect(jsonPath("$.size").value(size)); // 페이지 크기
+//                .andExpect(jsonPath("$.content", hasSize(size*2)))
+//                .andExpect(jsonPath("$.content").isArray()) // 목록(배열) 확인
+//                .andExpect(jsonPath("$[0].title").value(title + "0")) // 페이지 번호
+//                .andExpect(jsonPath("$[0].content").value(content + "0")); // 페이지 크기
     }
 
     @DisplayName("getArticle: 블로그 글 조회에 성공한다.")
@@ -215,72 +217,109 @@ class BlogApiControllerTest {
         assertThat(articles.get(0).getCreatedAt()).isNotNull();
     }
 
-//    @DisplayName("updateArticle: 블로그 글 수정에 성공한다.")
-//    @Test
-//    public void updateArticle() throws Exception {
-//        // given
-//        final String url = "/api/articles/{id}";
-//        final String title = "title";
-//        final String content = "content";
-//        final String email = "hyekjung@naver.com";
-//        final String phoneNumber = "010-0000-0000";
-//        final String userName = "혜정";
-//        final String password = "pW12345!@";
-//
-//        Article savedArticle = blogRepository.save(Article.builder()
-//                .title(title)
-//                .content(content)
-//                .email(email)
-//                .phoneNumber(phoneNumber)
-//                .userName(userName)
-//                .password(password)
-//                .build());
-//
-//        final String newTitle = "new title";
-//        final String newContent = "new content";
-//        final String newEmail = "hyekjung@naver.com";
-//        final String newPhoneNumber = "010-0000-0000";
-//        final String newUser = "혜정";
-//        final String newPassword = "pW12345!@";
-//
-//        UpdateArticleRequest request = new UpdateArticleRequest(newTitle, newContent, newEmail, newPhoneNumber,
-//                newUser, newPassword);
-//
-//        // when
-//        ResultActions result = mockMvc.perform(put(url, savedArticle.getId()).contentType(MediaType.APPLICATION_JSON_VALUE)
-//                .content(objectMapper.writeValueAsString(request)));
-//
-//        // then
-//        result.andExpect(status().isOk());
-//
-//        Article article = blogRepository.findById(savedArticle.getId()).get();
-//
-//        assertThat(article.getTitle()).isEqualTo(newTitle);
-//        assertThat(article.getContent()).isEqualTo(newContent);
-//    }
+    @DisplayName("updateArticle: 블로그 글 수정에 성공한다.")
+    @Test
+    public void updateArticle() throws Exception {
+        // given
+        final String url = "/api/articles/{id}";
+        final String title = "title";
+        final String content = "content";
+        final String email = "hyekjung@naver.com";
+        final String phoneNumber = "010-0000-0000";
+        final String userName = "혜정";
+        final String password = "pW12345!@";
 
+        Article savedArticle = blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .userName(userName)
+                .password(password)
+                .build());
 
+        final String newTitle = "new title";
+        final String newContent = "new content";
+        final String newEmail = "hyekjung@naver.com";
+        final String newPhoneNumber = "010-0000-0000";
+        final String newUser = "혜정";
+        final String newPassword = "pW12345!@";
 
-//    @DisplayName("deleteArticle: 블로그 글 삭제에 성공한다.")
-//    @Test
-//    public void deleteArticle() throws Exception {
-//        // given
-//        final String url = "/api/articles/{id}";
-//        final String title = "title";
-//        final String content = "content";
-//
-//        Article savedArticle = blogRepository.save(Article.builder()
-//                .title(title)
-//                .content(content)
-//                .build());
-//
-//        // when
-//        mockMvc.perform(delete(url, savedArticle.getId()))
-//                .andExpect(status().isOk());
-//
-//        // then
-//        List<Article> articles = blogRepository.findAll();
-//
-//        assertThat(articles).isEmpty();
-//    }
+        UpdateArticleRequest request = new UpdateArticleRequest(newTitle, newContent, newEmail, newPhoneNumber,
+                newUser, newPassword, savedArticle.getMessage());
+
+        // when
+        ResultActions result = mockMvc.perform(put(url, savedArticle.getId()).contentType(MediaType.APPLICATION_JSON_VALUE)
+                .content(objectMapper.writeValueAsString(request)));
+
+        // then
+        result.andExpect(status().isOk());
+
+        Article article = blogRepository.findById(savedArticle.getId()).get();
+
+        assertThat(article.getTitle()).isEqualTo(newTitle);
+        assertThat(article.getContent()).isEqualTo(newContent);
+    }
+
+    @DisplayName("deleteArticle: 블로그 글 삭제 상태 변경에 성공한다.")
+    @Test
+    public void deleteChange() throws Exception {
+        // given
+        final String url = "/api/articles/{id}";
+
+        final String title = "title";
+        final String content = "content";
+        final String email = "hyekjung@naver.com";
+        final String phoneNumber = "010-0000-0000";
+        final String userName = "혜정";
+        final String password = "pW12345!@";
+
+        Article savedArticle = blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .userName(userName)
+                .password(password)
+                .build());
+
+        // when
+        mockMvc.perform(delete(url, savedArticle.getId()))
+                .andExpect(status().isOk());
+
+        // then
+        boolean isDelete = blogRepository.findById(savedArticle.getId()).get().isDeletedAt();
+        assertTrue(isDelete);
+    }
+
+    @DisplayName("deleteArticle: 블로그 글 삭제에 성공한다.")
+    @Test
+    public void deleteArticle() throws Exception {
+        // given
+        final String url = "/api/articles/{id}/delete";
+        final String title = "title";
+        final String content = "content";
+        final String email = "hyekjung@naver.com";
+        final String phoneNumber = "010-0000-0000";
+        final String userName = "혜정";
+        final String password = "pW12345!@";
+
+        Article savedArticle = blogRepository.save(Article.builder()
+                .title(title)
+                .content(content)
+                .email(email)
+                .phoneNumber(phoneNumber)
+                .userName(userName)
+                .password(password)
+                .build());
+
+        // when
+        mockMvc.perform(delete(url, savedArticle.getId()))
+                .andExpect(status().isOk());
+
+        // then
+        List<Article> articles = blogRepository.findAll();
+
+        assertThat(articles).isEmpty();
+    }
 }

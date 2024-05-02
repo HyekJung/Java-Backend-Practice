@@ -29,13 +29,4 @@ public class UpdateArticleRequest{
     private String password;
 
     private String message;
-
-//    public UpdateArticleRequest(String title, String content, String email, String phoneNumber, String userName, String password){
-//        this.title = title;
-//        this.content = content;
-//        this.email = email;
-//        this.phoneNumber = phoneNumber;
-//        this.userName = userName;
-//        this.password = password;
-//    }
 }

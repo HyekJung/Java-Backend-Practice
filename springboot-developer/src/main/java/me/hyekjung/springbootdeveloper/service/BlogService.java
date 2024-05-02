@@ -41,18 +41,22 @@ public class BlogService {
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
     }
 
-//    //삭제하는 메서드
-//    public void delete(long id) {
-//        blogRepository.deleteById(id);
-//    }
-//
-//    //삭제처리 하는 메서드
-//    public Article deleteChange(long id, DeleteArticleRequest deleteArticleRequest) {
-//        deleteArticleRequest.setDeletedAt(true);
-//        return blogRepository.findById(id)
-//                .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
-//    }
+    @Transactional
+    // 삭제 상태 변경 메서드
+    public void deleteChange(long id) {
+        Article article = blogRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("id를 찾을 수 없습니다." + id));
+        article.setDeletedAt(true); //삭제 시간 변경 = 상태
+        blogRepository.save(article);
+    }
 
+    @Transactional
+    // 실제 삭제하는 메서드
+    public void delete(long id) {
+        blogRepository.deleteById(id);
+    }
+
+    // 수정하는 메서드
     @Transactional
     public Article update(long id, UpdateArticleRequest request){
         Article article = findById(id);

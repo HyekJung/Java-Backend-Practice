@@ -1,5 +1,6 @@
 package me.hyekjung.springbootdeveloper.dto;
 
+import jakarta.persistence.Column;
 import jakarta.persistence.EntityListeners;
 import jakarta.persistence.MappedSuperclass;
 import lombok.Getter;
@@ -12,7 +13,7 @@ import java.time.LocalDateTime;
 
 @Getter
 @Setter
-@MappedSuperclass // 상속 시 컬럼으로 인식
+@MappedSuperclass // 상속 시 컬럼으로 인식A
 @EntityListeners(AuditingEntityListener.class) //생성, 수정 시간 자동으로 반영하도록 설정
 public abstract class BaseEntity {
 
@@ -21,6 +22,7 @@ public abstract class BaseEntity {
     @LastModifiedDate //수정
     private LocalDateTime updatedAt;
 
-    //private boolean deletedAt; //삭제 여부
+    @Column(name = "deleted_at")
+    private boolean deletedAt; //삭제 여부
 
 }

@@ -80,24 +80,23 @@ public class BlogApiController {
         }
     }
 
-//    // 글 삭제 - 삭제 처리
-//    @DeleteMapping("/api/articles")
-//    public ResponseEntity<Void> deleteChange(@PathVariable long id,
-//                                              @RequestBody DeleteArticleRequest request) {
-//        blogService.deleteChange(id, request);
-//
-//        return ResponseEntity.ok()
-//                .build();
-//    }
-//
-//    // 글 삭제 - DB 삭제
-//    @DeleteMapping("/api/articles/{id}")
-//    public ResponseEntity<Void> deleteArticle(@PathVariable long id) {
-//        blogService.delete(id);
-//
-//        return ResponseEntity.ok()
-//                .build();
-//    }
+    // 글 삭제 - 삭제 상태 변경
+    @DeleteMapping("/api/articles/{id}")
+    public ResponseEntity<Void> deleteChange(@PathVariable long id) {
+        blogService.deleteChange(id); //삭제 변경
+
+        return ResponseEntity.ok()
+                .build();
+    }
+
+    // 글 삭제 - 실제 삭제
+    @DeleteMapping("/api/articles/{id}/delete") //매핑 충돌로 delete 추가
+    public ResponseEntity<String> delete(@PathVariable long id) {
+        blogService.delete(id); //삭제 처리
+
+        return ResponseEntity.ok()
+                .build();
+    }
 }
 
 
