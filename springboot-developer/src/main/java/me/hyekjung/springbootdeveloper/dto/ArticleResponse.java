@@ -18,8 +18,9 @@ public class ArticleResponse {
     private final String password;
     private final LocalDateTime createdAt;
     private final LocalDateTime updatedAt;
+    private final String message;
 
-    public ArticleResponse(Article article){
+    public ArticleResponse(Article article, String message){
         this.title = article.getTitle();
         this.content = article.getContent();
         this.email = article.getEmail();
@@ -28,5 +29,6 @@ public class ArticleResponse {
         this.password = article.getPassword();
         this.createdAt = article.getCreatedAt();
         this.updatedAt = article.getUpdatedAt();
+        this.message = message;
     }
 }

@@ -44,7 +44,7 @@ public class BlogApiController {
 
         Page<Article> articlePage = blogService.findAll(pageable);
         List<ArticleResponse> articles = articlePage.getContent().stream()
-                .map(ArticleResponse::new).toList();
+                .map(article -> new ArticleResponse(article, "")).toList();
 
         return ResponseEntity.ok().body(articles);
     }
@@ -54,8 +54,9 @@ public class BlogApiController {
     //URL 경로에서 값 추출
     public ResponseEntity<ArticleResponse> getArticles(@PathVariable long id){
         Article article = blogService.findById(id);
+        String message = blogService.getMessageArticle(id); //날짜 계산
 
-        return ResponseEntity.ok().body(new ArticleResponse(article));
+        return ResponseEntity.ok().body(new ArticleResponse(article, message));
     }
 
     // 글 추가

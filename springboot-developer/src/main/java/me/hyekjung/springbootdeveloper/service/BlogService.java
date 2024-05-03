@@ -14,6 +14,8 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 
+import java.time.Duration;
+import java.time.LocalDate;
 import java.time.LocalDateTime;
 import java.util.List;
 
@@ -39,6 +41,20 @@ public class BlogService {
     public Article findById(long id) {
         return blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
+    }
+
+    // 수정 가능 날짜 알려주는 메서드
+    public String getMessageArticle(long id){
+        Article article = findById(id);
+
+        //날짜 계산
+        LocalDateTime now = LocalDateTime.now();
+        LocalDateTime createdAt = article.getCreatedAt();
+        LocalDateTime lastDay = createdAt.plusDays(10);
+
+        Duration duration = Duration.between(now, lastDay); // 남은 날짜
+
+        return "게시물 수정까지 " + duration.toDays() + "일 남았습니다.";
     }
 
     @Transactional
