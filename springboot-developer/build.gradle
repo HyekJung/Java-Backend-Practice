@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 plugins {
     id 'java'
     id 'org.springframework.boot' version '3.0.2'
@@ -39,4 +40,35 @@ compileTestKotlin {
     kotlinOptions {
         jvmTarget = "17"
     }
+=======
+plugins {
+    id 'java'
+    id 'org.springframework.boot' version '3.0.2'
+    id 'io.spring.dependency-management' version '1.1.0'
+}
+
+group = 'me.hyekjung'
+version '1.0'
+sourceCompatibility = '17'
+
+repositories {
+    mavenCentral()
+}
+
+dependencies {
+    implementation 'org.springframework.boot:spring-boot-starter-web'
+    implementation 'org.springframework.boot:spring-boot-starter-data-jpa' //jpa
+    implementation 'org.springframework.boot:spring-boot-starter-validation'//validation
+
+    testImplementation 'org.springframework.boot:spring-boot-starter-test'
+
+    runtimeOnly 'com.h2database:h2'  //인메모리 데이터베이스
+
+    compileOnly 'org.projectlombok:lombok' //롬복
+    annotationProcessor 'org.projectlombok:lombok'
+}
+
+test {
+    //useJUnitPlatform()
+>>>>>>> 90b5f7648b73c14a1cbdac4e4f7dab41bbe1ee8a
 }

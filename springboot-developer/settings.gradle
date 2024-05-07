@@ -1,3 +1,4 @@
+<<<<<<< HEAD
 pluginManagement {
     plugins {
         id 'org.jetbrains.kotlin.jvm' version '1.9.21'
@@ -5,3 +6,7 @@ pluginManagement {
 }
 rootProject.name = 'springboot-developer'
 
+=======
+rootProject.name = 'springboot-developer'
+
+>>>>>>> 90b5f7648b73c14a1cbdac4e4f7dab41bbe1ee8a
