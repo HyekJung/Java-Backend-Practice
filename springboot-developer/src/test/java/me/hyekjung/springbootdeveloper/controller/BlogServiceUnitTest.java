@@ -10,6 +10,8 @@ import org.junit.jupiter.api.extension.ExtendWith;
 import org.mockito.InjectMocks;
 import org.mockito.Mock;
 import org.mockito.junit.jupiter.MockitoExtension;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.Pageable;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
@@ -44,45 +46,22 @@ class BlogServiceUnitTest {
         assertThat(savedArticle.getContent()).isEqualTo("content");
     }
 
-/*
-    @DisplayName("getPageAllArticles: 블로그 글 페이징 목록 조회에 성공한다.")
+
+    @DisplayName("getAllArticles: 블로그 글 목록 조회에 성공한다.")
     @Test
-    public void getPageAllArticles() throws Exception {
+    public void getAllArticles() {
         // given
-        final String url = "/api/articles";
-        Pageable pageable = PageRequest.of(0, 10, Sort.by(Sort.Direction.ASC, "createdAt"));
-
-        final String title = "title";
-        final String content = "content";
-        final String email = "hyekjung@naver.com";
-        final String phoneNumber = "010-0000-000";
-        final String userName = "혜정";
-        final String password = "pW12345!@";
-
-        Article article = Article.builder() //글 등록
-                .title(title)
-                .content(content)
-                .email(email)
-                .phoneNumber(phoneNumber)
-                .userName(userName)
-                .password(password)
-                .build();
+        Page<Article> mockPage = mock(Page.class);
+        when(blogRepository.findAll(any(Pageable.class))).thenReturn(mockPage);
 
         //when
-        List<Article> expectedArticles = new ArrayList<>(); // 글 목록 저장
-        expectedArticles.add(article);
+        Page<Article> resultPage = blogService.findAll(Pageable.unpaged()); //페이징 처리하지 않음
 
-        Page<Article> expectedPage = new PageImpl<>(expectedArticles);
-
-        when(blogService.findAll(pageable)).thenReturn(expectedPage);
-
-
-
-
-
+        //then
+        assertThat(resultPage).isNotNull();
     }
 
-
+/*
     @DisplayName("getArticle: 블로그 글 조회에 성공한다.")
     @Test
     public void getArticle() throws Exception {
