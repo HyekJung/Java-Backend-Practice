@@ -8,7 +8,7 @@ import java.time.LocalDateTime;
 
 @Entity // 엔티티로 지정
 @Getter
-@NoArgsConstructor(access = AccessLevel.PROTECTED)
+@NoArgsConstructor
 public class Article extends BaseEntity {
 
     @Id // id 필드를 기본키로 지정
