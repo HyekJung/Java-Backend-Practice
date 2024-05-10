@@ -13,6 +13,8 @@ import org.mockito.junit.jupiter.MockitoExtension;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 
+import java.util.Optional;
+
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.mockito.Mockito.*;
 import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
@@ -27,8 +29,6 @@ class BlogServiceUnitTest {
     @InjectMocks
     protected BlogService blogService;
 
-
-    // 블로그 글 목록 조회
     @DisplayName("saveArticle: 블로그 글 저장에 성공한다.")
     @Test
     public void saveArticle() {
@@ -46,7 +46,6 @@ class BlogServiceUnitTest {
         assertThat(savedArticle.getContent()).isEqualTo("content");
     }
 
-
     @DisplayName("getAllArticles: 블로그 글 목록 조회에 성공한다.")
     @Test
     public void getAllArticles() {
@@ -61,44 +60,26 @@ class BlogServiceUnitTest {
         assertThat(resultPage).isNotNull();
     }
 
-/*
-    @DisplayName("getArticle: 블로그 글 조회에 성공한다.")
+
+    @DisplayName("getById: id 조회에 성공한다.")
     @Test
-    public void getArticle() throws Exception {
-        // given
-        final String url = "/api/articles/{id}";
+    public void getById() throws Exception {
+        //given
+        long mockid = 1L;
+        Article mockArticle = new Article("title", "content", "test@example.com", "010-1234-5678", "username", "password");
+        when(blogRepository.findById(mockid)).thenReturn(Optional.of(mockArticle));
 
-        final String title = "title";
-        final String content = "content";
-        final String email = "hyekjung@naver.com";
-        final String phoneNumber = "010-0000-0000";
-        final String userName = "혜정";
-        final String password = "pW12345!@";
+        //when
+/*        AddArticleRequest request = new AddArticleRequest("title", "content", "test@example.com", "010-1234-5678", "username", "password");
+        blogService.save(request);*/
+        Article resultArticle = blogService.findById(mockid);
 
-        Article savedArticle = blogRepository.save(Article.builder()
-                .title(title)
-                .content(content)
-                .email(email)
-                .phoneNumber(phoneNumber)
-                .userName(userName)
-                .password(password)
-                .build());
+        //then
+        assertThat(mockArticle).isNotNull();
+        assertThat(mockArticle).isEqualTo(resultArticle);
 
-        // when
-        final ResultActions resultActions = mockMvc.perform(get(url, savedArticle.getId()));
-
-        // then
-        resultActions
-                .andExpect(status().isOk())
-                .andExpect(jsonPath("$.content").value(content))
-                .andExpect(jsonPath("$.title").value(title))
-                .andExpect(jsonPath("$.email").value(email))
-                .andExpect(jsonPath("$.phoneNumber").value(phoneNumber))
-                .andExpect(jsonPath("$.userName").value(userName))
-                .andExpect(jsonPath("$.password").value(password))
-                .andExpect(jsonPath("$.createdAt").exists());
     }
-
+/*
     @DisplayName("addArticle: 블로그 글 추가에 성공한다.")
     @Test
     public void addArticle() throws Exception {
