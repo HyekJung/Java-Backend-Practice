@@ -91,7 +91,6 @@ class BlogServiceUnitTest {
 
         //then
         assertEquals("not found : " + mockid, exception.getMessage());
-
     }
 
     @DisplayName("deleteArticle: 블로그 글 삭제에 성공한다.") //D
