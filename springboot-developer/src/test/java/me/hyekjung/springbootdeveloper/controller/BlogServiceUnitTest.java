@@ -20,6 +20,7 @@ import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
+import static org.junit.jupiter.api.Assertions.assertTrue;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -91,6 +92,39 @@ class BlogServiceUnitTest {
 
         //then
         assertEquals("not found : " + mockid, exception.getMessage());
+<<<<<<< HEAD
+=======
+    }
+
+    @DisplayName("deleteChange: 블로그 글 삭제 상태 변경에 성공한다.") //D
+    @Test
+    public void deleteChange() throws Exception {
+        // given
+        long mockId = 1L;
+        Article mockArticle = new Article("title", "content", "test@example.com", "010-1234-5678", "username", "password");
+        when(blogRepository.findById(mockId)).thenReturn(Optional.of(mockArticle));
+
+        //when
+        blogService.deleteChange(mockId);
+
+        //then
+        assertTrue(mockArticle.isDeletedAt());
+    }
+
+    @DisplayName("deleteChangeNotFound: 블로그 글 삭제 상태 변경에 실패한다.") //D
+    @Test
+    public void deleteChangeNotFound() throws Exception  {
+        // given
+        long mockId = 2L;
+        when(blogRepository.findById(mockId)).thenReturn(Optional.empty());
+
+        //when
+        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+                blogService.deleteChange(mockId));
+
+        //then
+        assertEquals("id를 찾을 수 없습니다." + mockId, exception.getMessage());
+>>>>>>> a0b5677f8bd6aa7dc608892a3d0d8b6dd9166e17
     }
 
     @DisplayName("deleteArticle: 블로그 글 삭제에 성공한다.") //D
@@ -112,14 +146,7 @@ class BlogServiceUnitTest {
         // given
         Long mockId = 1L;
         UpdateArticleRequest request = new UpdateArticleRequest("title1", "content", "test@update.com", "010-1234-5678", "userName", "password", "");
-/*        Article mockArticle = Article.builder() //수정되기 전 기존 글
-                            .title("title")
-                            .content("content")
-                            .email("test@example.com")
-                            .phoneNumber("010-1234-5678")
-                            .userName("userName")
-                            .password("password")
-                            .build();*/
+
         Article mockArticle = new Article("title", "content", "test@update.com", "010-1234-5678", "userName", "password");
         mockArticle.setCreatedAt(LocalDateTime.now()); //생성시간이 자동으로 반영되지 않아 수동으로 입력
 
