@@ -33,20 +33,20 @@ public class BlogService {
 
     @Transactional(readOnly = true)
     //전체 조회
-    public Page<Article> findAll(Pageable pageable){ //페이지 정보
+    public Page<Article> getAll(Pageable pageable){ //페이지 정보
         return blogRepository.findAll(pageable);
     }
 
     // 글 조회에 필요한 Id
     @Transactional(readOnly = true) // 성능 향상
-    public Article findById(long id) {
+    public Article getById(long id) {
         return blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("not found : " + id));
     }
 
     // 수정 가능 날짜 알려주는 메서드
     public String getMessageArticle(long id){
-        Article article = findById(id);
+        Article article = getById(id);
 
         //날짜 계산
         LocalDateTime now = LocalDateTime.now();
@@ -76,7 +76,7 @@ public class BlogService {
     // 수정하는 메서드
     @Transactional
     public Article update(long id, UpdateArticleRequest request){
-        Article article = findById(id);
+        Article article = getById(id);
 
         LocalDateTime now = LocalDateTime.now(); // 수정 시각
         LocalDateTime createdAt = article.getCreatedAt(); // 글 생성일

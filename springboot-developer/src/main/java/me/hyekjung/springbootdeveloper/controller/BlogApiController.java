@@ -42,7 +42,7 @@ public class BlogApiController {
 
         Pageable pageable = PageRequest.of(page, size, Sort.by(direction, "createdAt"));
 
-        Page<Article> articlePage = blogService.findAll(pageable);
+        Page<Article> articlePage = blogService.getAll(pageable);
         List<ArticleResponse> articles = articlePage.getContent().stream()
                 .map(article -> new ArticleResponse(article, "")).toList();
 
@@ -53,7 +53,7 @@ public class BlogApiController {
     @GetMapping("/api/articles/{id}")
     //URL 경로에서 값 추출
     public ResponseEntity<ArticleResponse> getArticles(@PathVariable long id){
-        Article article = blogService.findById(id);
+        Article article = blogService.getById(id);
         String message = blogService.getMessageArticle(id); //날짜 계산
 
         return ResponseEntity.ok().body(new ArticleResponse(article, message));
