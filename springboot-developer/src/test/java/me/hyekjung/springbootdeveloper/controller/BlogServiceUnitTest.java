@@ -92,6 +92,8 @@ class BlogServiceUnitTest {
 
         //then
         assertEquals("not found : " + mockid, exception.getMessage());
+<<<<<<< HEAD
+=======
     }
 
     @DisplayName("deleteChange: 블로그 글 삭제 상태 변경에 성공한다.") //D
@@ -122,6 +124,7 @@ class BlogServiceUnitTest {
 
         //then
         assertEquals("id를 찾을 수 없습니다." + mockId, exception.getMessage());
+>>>>>>> a0b5677f8bd6aa7dc608892a3d0d8b6dd9166e17
     }
 
     @DisplayName("deleteArticle: 블로그 글 삭제에 성공한다.") //D
