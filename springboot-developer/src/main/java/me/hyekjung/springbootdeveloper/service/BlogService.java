@@ -63,8 +63,7 @@ public class BlogService {
     public void deleteChange(long id) {
         Article article = blogRepository.findById(id)
                 .orElseThrow(() -> new IllegalArgumentException("id를 찾을 수 없습니다." + id));
-        article.setDeletedAt(true); //삭제 시간 변경 = 상태
-        blogRepository.save(article);
+        article.setDeletedAt(true); //삭제 시간 변경 = 상태, true = 삭제 o
     }
 
     @Transactional
