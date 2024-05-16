@@ -20,8 +20,6 @@ import java.util.Optional;
 import static org.assertj.core.api.Assertions.assertThat;
 import static org.junit.jupiter.api.Assertions.assertEquals;
 import static org.mockito.Mockito.*;
-import static org.springframework.test.web.servlet.request.MockMvcRequestBuilders.get;
-import static org.springframework.test.web.servlet.result.MockMvcResultMatchers.jsonPath;
 
 @ExtendWith(MockitoExtension.class)
 class BlogServiceUnitTest {
@@ -39,7 +37,7 @@ class BlogServiceUnitTest {
         AddArticleRequest request = new AddArticleRequest("title", "content", "test@example.com", "010-1234-5678", "username", "password");
 
         // when
-        when(blogRepository.save(any())).thenReturn(new Article("title", "content", "test@example.com", "010-1234-5678", "username", "password"));
+        when(blogRepository.save(any())).thenReturn(request.toEntity());
 
         Article savedArticle = blogService.save(request);
 
@@ -126,69 +124,6 @@ class BlogServiceUnitTest {
         assertEquals(request.getPhoneNumber(), updateArticle.getPhoneNumber());
         assertEquals(request.getUserName(), updateArticle.getUserName());
         assertEquals(request.getPassword(), updateArticle.getPassword());
-
+        assertEquals("성공적으로 수정되었습니다.", updateArticle.getMessage());
     }
-
-/*
-    @DisplayName("deleteArticle: 블로그 글 삭제 상태 변경에 성공한다.")
-    @Test
-    public void deleteChange() throws Exception {
-        // given
-        final String url = "/api/articles/{id}";
-
-        final String title = "title";
-        final String content = "content";
-        final String email = "hyekjung@naver.com";
-        final String phoneNumber = "010-0000-0000";
-        final String userName = "혜정";
-        final String password = "pW12345!@";
-
-        Article savedArticle = blogRepository.save(Article.builder()
-                .title(title)
-                .content(content)
-                .email(email)
-                .phoneNumber(phoneNumber)
-                .userName(userName)
-                .password(password)
-                .build());
-
-        // when
-        mockMvc.perform(delete(url, savedArticle.getId()))
-                .andExpect(status().isOk());
-
-        // then
-        boolean isDelete = blogRepository.findById(savedArticle.getId()).get().isDeletedAt();
-        assertTrue(isDelete);
-    }
-
-    @DisplayName("deleteArticle: 블로그 글 삭제에 성공한다.")
-    @Test
-    public void deleteArticle() throws Exception {
-        // given
-        final String url = "/api/articles/{id}/delete";
-        final String title = "title";
-        final String content = "content";
-        final String email = "hyekjung@naver.com";
-        final String phoneNumber = "010-0000-0000";
-        final String userName = "혜정";
-        final String password = "pW12345!@";
-
-        Article savedArticle = blogRepository.save(Article.builder()
-                .title(title)
-                .content(content)
-                .email(email)
-                .phoneNumber(phoneNumber)
-                .userName(userName)
-                .password(password)
-                .build());
-
-        // when
-        mockMvc.perform(delete(url, savedArticle.getId()))
-                .andExpect(status().isOk());
-
-        // then
-        List<Article> articles = blogRepository.findAll();
-
-        assertThat(articles).isEmpty();
-    }*/
 }
