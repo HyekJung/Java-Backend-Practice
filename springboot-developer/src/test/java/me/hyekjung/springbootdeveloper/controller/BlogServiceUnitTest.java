@@ -19,8 +19,7 @@ import java.time.LocalDateTime;
 import java.util.Optional;
 
 import static org.assertj.core.api.Assertions.assertThat;
-import static org.junit.jupiter.api.Assertions.assertEquals;
-import static org.junit.jupiter.api.Assertions.assertTrue;
+import static org.junit.jupiter.api.Assertions.*;
 import static org.mockito.Mockito.*;
 
 @ExtendWith(MockitoExtension.class)
@@ -87,13 +86,11 @@ class BlogServiceUnitTest {
         when(blogRepository.findById(mockid)).thenReturn(Optional.empty());
 
         //when
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 blogService.getById(mockid));
 
         //then
         assertEquals("not found : " + mockid, exception.getMessage());
-<<<<<<< HEAD
-=======
     }
 
     @DisplayName("deleteChange: 블로그 글 삭제 상태 변경에 성공한다.") //D
@@ -119,12 +116,11 @@ class BlogServiceUnitTest {
         when(blogRepository.findById(mockId)).thenReturn(Optional.empty());
 
         //when
-        IllegalArgumentException exception = Assertions.assertThrows(IllegalArgumentException.class, () ->
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
                 blogService.deleteChange(mockId));
 
         //then
         assertEquals("id를 찾을 수 없습니다." + mockId, exception.getMessage());
->>>>>>> a0b5677f8bd6aa7dc608892a3d0d8b6dd9166e17
     }
 
     @DisplayName("deleteArticle: 블로그 글 삭제에 성공한다.") //D
@@ -145,24 +141,63 @@ class BlogServiceUnitTest {
     public void updateArticle() throws Exception {
         // given
         Long mockId = 1L;
-        UpdateArticleRequest request = new UpdateArticleRequest("title1", "content", "test@update.com", "010-1234-5678", "userName", "password", "");
-
-        Article mockArticle = new Article("title", "content", "test@update.com", "010-1234-5678", "userName", "password");
-        mockArticle.setCreatedAt(LocalDateTime.now()); //생성시간이 자동으로 반영되지 않아 수동으로 입력
-
+        Article mockArticle = new Article("title", "content", "test@example.com", "010-1234-5678", "username", "password");
         when(blogRepository.findById(mockId)).thenReturn(Optional.of(mockArticle));
+        mockArticle.setCreatedAt(LocalDateTime.now()); //생성시간이 자동으로 반영되지 않아 수동으로 입력
+        UpdateArticleRequest request = new UpdateArticleRequest("title1", "content", "test@update.com", "010-1234-5678", "userName", "password", "");
 
         //when
         Article updateArticle = blogService.update(mockId, request);
 
         //then
-        assertThat(updateArticle).isNotNull();
-        assertEquals(request.getTitle(), updateArticle.getTitle());
-        assertEquals(request.getContent(), updateArticle.getContent());
-        assertEquals(request.getEmail(), updateArticle.getEmail());
-        assertEquals(request.getPhoneNumber(), updateArticle.getPhoneNumber());
-        assertEquals(request.getUserName(), updateArticle.getUserName());
-        assertEquals(request.getPassword(), updateArticle.getPassword());
+        verify(blogRepository, times(1)).findById(mockId);
+        assertThat(request.getTitle()).isEqualTo(updateArticle.getTitle());
+        assertThat(request.getContent()).isEqualTo(updateArticle.getContent());
+        assertThat(request.getEmail()).isEqualTo(updateArticle.getEmail());
         assertEquals("성공적으로 수정되었습니다.", updateArticle.getMessage());
+    }
+
+    @DisplayName("updateArticleIsFutureTen: 블로그 글 수정 - 생성 [10일] 후에는 글 수정 불가") //U
+    @Test
+    public void updateArticleIsFutureTen() throws Exception {
+        // given
+        Long mockId = 1L;
+        Article mockArticle = new Article("title", "content", "test@example.com", "010-1234-5678", "username", "password");
+        LocalDateTime createdAt = LocalDateTime.now().minusDays(10); //생성 시간 - 10일 전 설정
+        mockArticle.setCreatedAt(createdAt);
+
+        when(blogRepository.findById(mockId)).thenReturn(Optional.of(mockArticle));
+
+        UpdateArticleRequest request = new UpdateArticleRequest("title1", "content", "test@update.com", "010-1234-5678", "userName", "password", "");
+
+        //when
+        IllegalArgumentException exception = assertThrows(IllegalArgumentException.class, () ->
+                blogService.update(mockId, request));
+
+        //then
+        assertEquals("글을 [등록, 수정]한 지 10일이 지나 더 이상 수정할 수 없습니다.", exception.getMessage());
+    }
+
+    @DisplayName("updateArticleIsFutureNine: 블로그 글 수정 - 생성 [9일 째] 수정 불가 알람") //U
+    @Test
+    public void updateArticleIsFutureNine() throws Exception {
+        // given
+        Long mockId = 1L;
+        Article mockArticle = new Article("title", "content", "test@example.com", "010-1234-5678", "username", "password");
+        LocalDateTime createdAt = LocalDateTime.now().minusDays(9); //생성 시간
+        mockArticle.setCreatedAt(createdAt);
+
+        when(blogRepository.findById(mockId)).thenReturn(Optional.of(mockArticle));
+
+        UpdateArticleRequest request = new UpdateArticleRequest("title1", "content", "test@update.com", "010-1234-5678", "userName", "password", "");
+
+        //when
+        Article updateArticle = blogService.update(mockId, request);
+
+        //then
+        verify(blogRepository, times(1)).findById(mockId);
+        assertThat(request.getTitle()).isEqualTo(updateArticle.getTitle());
+        assertThat(request.getContent()).isEqualTo(updateArticle.getContent());
+        assertEquals("마지막 수정일입니다. 하루가 지나면 수정할 수 없습니다.", updateArticle.getMessage());
     }
 }

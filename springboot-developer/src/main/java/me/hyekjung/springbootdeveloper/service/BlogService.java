@@ -75,7 +75,8 @@ public class BlogService {
     // 수정하는 메서드
     @Transactional
     public Article update(long id, UpdateArticleRequest request){
-        Article article = getById(id);
+        Article article = blogRepository.findById(id)
+                .orElseThrow(() -> new IllegalArgumentException("id를 찾을 수 없습니다 : " + id));
 
         LocalDateTime now = LocalDateTime.now(); // 수정 시각
         LocalDateTime createdAt = article.getCreatedAt(); // 글 생성일
